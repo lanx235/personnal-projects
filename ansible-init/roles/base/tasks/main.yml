@@ -1,0 +1,55 @@
+---
+# tasks file for roles/bash
+- name: 创建运维用户
+  user:
+    name: "{{ deploy_user }}"
+    password: "{{ deploy_password | password_hash('sha512') }}"
+    state: present
+
+- name: 配置 sudo 免密提权
+  lineinfile:
+    path: /etc/sudoers
+    line: "{{ deploy_user }} ALL=(ALL) NOPASSWD: ALL"
+    state: present
+- name: 在控制节点为运维用户生成 SSH 密钥对
+  user:
+    name: "{{ deploy_user }}"
+    generate_ssh_key: yes
+    ssh_key_bits: 2048
+    ssh_key_file: .ssh/id_rsa
+  delegate_to: localhost
+- name: 推送 SSH 公钥
+  authorized_key:
+    user: "{{ deploy_user }}"
+    key: "{{ lookup('file', '/home/' + deploy_user + '/.ssh/id_rsa.pub') }}"
+    state: present
+
+- name: 安装基础软件包
+  yum:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ base_packages }}"
+
+- name: 关闭 firewalld
+  systemd:
+    name: firewalld
+    state: stopped
+    enabled: no
+  ignore_errors: yes
+
+- name: 关闭 SELinux
+  selinux:
+    state: disabled
+
+- name: 设置时区
+  timezone:
+    name: "{{ timezone }}"
+
+- name: 配置历史命令格式
+  lineinfile:
+    path: /etc/profile.d/history.sh
+    line: "{{ item }}"
+    create: yes
+  loop:
+    - 'export HISTTIMEFORMAT="%F %T "'
+    - 'export HISTSIZE=10000'

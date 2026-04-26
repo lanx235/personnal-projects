@@ -1,0 +1,12 @@
+---
+# tasks file for roles/yum
+- name: 推送mydvd.repo到被控节点
+  copy:
+    src: mydvd.repo
+    dest: /etc/yum.repo.d/
+    owner: root
+    group: root
+    mode: 0644
+- name: 清理yum缓存
+  command: yum clean all
+  changed_when: false

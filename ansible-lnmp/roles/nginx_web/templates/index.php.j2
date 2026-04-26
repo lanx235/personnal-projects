@@ -1,0 +1,6 @@
+<h1>{{ inventory_hostname }} - OLD VERSION</h1>
+<?php
+$link = mysqli_connect('{{ db_host }}', '{{ db_user }}', '{{ db_password }}', '{{ db_name }}');
+if ($link) echo "MySQL connected!";
+else echo "MySQL failed: " . mysqli_connect_error();
+?>

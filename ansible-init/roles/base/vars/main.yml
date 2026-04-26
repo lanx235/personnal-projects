@@ -1,0 +1,6 @@
+---
+# vars file for roles/bash
+deploy_user: deployer
+deploy_password: "Deploy@123"
+
+timezone: "Asia/Shanghai"

@@ -1,0 +1,16 @@
+---
+- name: 部署数据库
+  hosts: web1
+  roles:
+    - mysql
+
+- name: 部署后端 Web 服务
+  hosts: webservers
+  roles:
+    - nginx_web
+    - php
+
+- name: 部署代理服务器
+  hosts: proxies
+  roles:
+    - nginx_proxy

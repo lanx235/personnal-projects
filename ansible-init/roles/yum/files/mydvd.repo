@@ -1,0 +1,12 @@
+[local_BaseOS]
+baseurl=ftp://50.0.0.5/dvd/BaseOS
+gpgcheck=0
+enabled=1
+[local_AppStream]
+baseurl=ftp://50.0.0.5/dvd/AppStream
+gpgcheck=0
+enabled=1
+[ansible_rpms]
+baseurl=ftp://50.0.0.5/rpms
+gpgcheck=0
+enabled=1

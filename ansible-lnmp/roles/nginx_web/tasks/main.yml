@@ -1,0 +1,29 @@
+---
+# tasks file for roles/nginx_web
+- name: 安装nginx
+  yum:
+    name: nginx
+    state: present
+
+- name: 推送web 配置
+  template:
+    src: web.conf.j2
+    dest: /etc/nginx/conf.d/web.conf
+  notify: reload nginx
+
+- name: 部署网站代码
+  template:
+    src: index.php.j2
+    dest: /usr/share/nginx/html/index.php
+
+- name: 删除默认首页
+  file:
+    path: /usr/share/nginx/html/index.html
+    state: absent
+
+- name: 启动 nginx
+  systemd:
+    name: nginx
+    state: started
+    enabled: yes
+

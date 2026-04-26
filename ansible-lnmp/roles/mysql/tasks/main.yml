@@ -1,0 +1,33 @@
+---
+# tasks file for roles/mysql
+- name: 安装数据库和依赖环境
+  yum:
+    name: 
+      - mariadb-server
+      - python3-PyMySQL
+    state: present
+
+- name: 启动服务
+  systemd: 
+    name: mariadb
+    state: started
+    enabled: yes
+
+- name: 创建数据库
+  mysql_db:
+    name: "{{ db_name }}"
+    state: present
+    login_unix_socket: /var/lib/mysql/mysql.sock
+
+- name: 创建用户并授权
+  mysql_user:
+    name: "{{ db_user }}"
+    password: "{{ db_password }}"
+    priv: "{{ db_name }}.*:ALL"
+    host: "{{ item }}"
+    state: present
+  loop:
+    - "{{ web1_ip }}"
+    - "{{ web2_ip }}"
+    - "%"
+  

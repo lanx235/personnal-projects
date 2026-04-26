@@ -1,0 +1,7 @@
+---
+# defaults file for roles/bash
+base_packages:
+  - vim
+  - net-tools
+  - git
+  - bash-completion
