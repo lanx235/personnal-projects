@@ -13,11 +13,11 @@
 代理层 (proxy / 50.0.0.5)
 Nginx 反向代理 + 负载均衡
     │
-    ├──── web1 (50.0.0.101)
-    │     Nginx + PHP-FPM + MySQL
+    ├──── web1 (50.0.0.101)   （50.0.0.101）
+    │     Nginx + PHP-FPM + MySQL│Nginx PHP-FPM MySQL
     │
-    └──── web2 (50.0.0.102)
-          Nginx + PHP-FPM
+    └──── web2 (50.0.0.102)   2.2.10 （2.2.10）
+          Nginx + PHP-FPM   Nginx PHP-FPM
 ```
 
 ### 核心成果
@@ -29,27 +29,37 @@ Nginx 反向代理 + 负载均衡
 
 ### 项目结构
 
-```
-ansible-lnmp/
-├── site_lnmp.yml              # 入口剧本
-├── group_vars/all.yml         # 公共变量（加密）
-├── inventory
-└── roles/
-    ├── mysql/                 # MariaDB 安装与配置
-    ├── nginx_web/             # 后端 Web 服务
-    ├── php/                   # PHP-FPM 配置
-    └── nginx_proxy/           # 反向代理与负载均衡
+```mermaid
+graph TD
+    A[客户端<br>100.0.0.10]
+    
+    A -->|HTTP 请求| B   A—>|HTTP
+    
+    subgraph 代理层
+        B[proxy<br>100.0.0.5 / 50.0.0.5<br>Nginx 反向代理<br>负载均衡 + 健康检查]
+    end
+    
+    B -->|分发流量| C
+    B -->|分发流量| D
+    
+    subgraph Web 后端集群
+        C[web1<br>50.0.0.101<br>Nginx + PHP-FPM<br>MariaDB]
+    end
+    
+    subgraph Web 后端集群
+        D[web2<br>50.0.0.102<br>Nginx + PHP-FPM]
+    end
 ```
 
 ### 快速开始
 
-```bash
+```bash   ”“bash   “bash”;“bash
 # 1. 确保 inventory 中主机 IP 正确
 # 2. 执行部署
-ansible-playbook site_lnmp.yml --ask-vault-pass
+ansible-playbook site_lnmp.yml --ask-vault-passansible-playbook site_lnmp。yml——ask-vault-pass
 
 # 3. 验证
-curl http://<proxy-ip>/
+curl http://<proxy-ip>/   curl http://< proxy-ip> /
 ```
 
 ### 技术栈
@@ -57,5 +67,5 @@ curl http://<proxy-ip>/
 - Rocky Linux 8.6
 - Ansible（Role / Vault / 变量管理）
 - Nginx（反向代理 / 负载均衡 / 动静分离）
-- PHP-FPM（Unix Socket）
-- MariaDB
+- PHP-FPM（Unix Socket）   PHP-FPM（Unix Socket）
+- MariaDB   ——MariaDB
