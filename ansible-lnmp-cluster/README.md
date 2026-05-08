@@ -22,7 +22,7 @@ Nginx 反向代理 + 负载均衡
 
 ### 核心成果
 
-- 四个独立 Role：`mysql`、`nginx_web`、`php`、`nginx_proxy`
+- 四个独立 Role：mysql、nginx_web、php、nginx_proxy
 - 负载均衡与健康检查：后端故障时自动切换，无 502
 - 敏感信息加密：`ansible-vault` 管理数据库密码
 - 幂等性验证：多次执行 Playbook 状态一致
